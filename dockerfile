@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y \
     python3-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Download and install the actual C library (lgpio) that Debian is missing
+# Build the C library (lgpio)
 RUN wget https://github.com/joan2937/lg/archive/master.tar.gz && \
     tar zxvf master.tar.gz && \
     cd lg-master && \
@@ -20,27 +20,22 @@ RUN wget https://github.com/joan2937/lg/archive/master.tar.gz && \
 COPY --from=uv_bin /uv /bin/uv
 WORKDIR /app
 
-# Now uv can compile the Python 'lgpio' wrapper because the C headers are installed
+# Install dependencies directly into the SYSTEM python
 COPY pyproject.toml uv.lock ./
-RUN uv sync --frozen --no-cache
+RUN uv pip install --no-cache --system -r pyproject.toml
 
 # --- Stage 2: Runtime ---
 FROM python:3.12-slim-bookworm
 
 WORKDIR /app
 
-# We must copy the compiled C libraries from the builder to the runtime
+# Copy compiled C libraries
 COPY --from=builder /usr/local/lib /usr/local/lib
 COPY --from=builder /usr/local/include /usr/local/include
-COPY --from=builder /app/.venv /app/.venv
+# Copy the installed python packages from system site-packages
+COPY --from=builder /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
 COPY . .
 
-# Refresh the library cache so the system finds liblgpio.so
 RUN ldconfig
-
-ENV PATH="/app/.venv/bin:$PATH"
-
-# check w/o
-ENV GPIOZERO_PIN_FACTORY=lgpio
 
 CMD ["python", "main.py"]
