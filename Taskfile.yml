@@ -1,0 +1,32 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+
+version: "3"
+
+vars:
+    GREETING: Hello, world!
+
+tasks:
+    run:
+        desc: Run the main script
+        cmds:
+            - uv run main.py
+    env:
+        desc: sync env
+        cmds:
+            - uv sync
+    build:
+        desc: Build the optimized Docker image
+        cmds:
+            - docker compose build
+    up:
+        desc: Launch the container and start hardware interaction
+        cmds:
+            - docker compose up -d
+    logs:
+        desc: Follow the output of the blinking script
+        cmds:
+            - docker compose logs -f
+    down:
+        desc: Stop the container and release GPIO pins
+        cmds:
+            - docker compose down

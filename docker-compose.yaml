@@ -1,0 +1,9 @@
+services:
+    blink-app:
+        build: .
+        container_name: pi5_blinker
+        # Map the physical pins to the container
+        devices:
+            - "/dev/gpiochip4:/dev/gpiochip4"
+        # Restart policy is useful for hardware monitors
+        restart: unless-stopped

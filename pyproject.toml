@@ -1,0 +1,10 @@
+[project]
+name = "docker-pi-poc"
+version = "0.1.0"
+description = "Docker-Raspberry Pi POC"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "gpiozero",
+    "lgpio>=0.2.2.0",
+]
