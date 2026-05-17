@@ -1,4 +1,4 @@
-# 🛠️ Setup & Development
+# Setup & Development
 
 This project uses uv for Python package management and Task for automation. It is optimized for the Raspberry Pi 5 architecture.
 
@@ -52,7 +52,7 @@ uv run main.py
 task run
 ```
 
-# 🐳 Docker Deployment
+# Docker Deployment
 
 To run this in a container, we map the hardware character device directly into the isolated environment.
 Docker Compose
